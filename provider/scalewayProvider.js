@@ -64,7 +64,7 @@ class ScalewayProvider {
     } else if (process.env.SCW_REGION) {
       this.scwRegion = process.env.SCW_REGION;
     } else {
-      this.scwRegion = this.serverless.service.provider.scwRegion || '';
+      this.scwRegion = this.serverless.service.provider.scwRegion || 'fr-par';
     }
     this.apiFunctionUrl = process.env.SCW_FUNCTION_URL || util.format(FUNCTIONS_API_URL, this.scwRegion);
     this.apiContainerUrl = process.env.SCW_CONTAINER_URL || util.format(CONTAINERS_API_URL, this.scwRegion);

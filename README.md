@@ -64,7 +64,7 @@ provider:
     test: test
   scwToken: <scw-token>
   scwProject: <scw-project-id>
-  # region in which the deployment will happen
+  # region in which the deployment will happen, (default fr-par)
   scwRegion: <scw-region>
 
 plugins:
@@ -95,7 +95,7 @@ The different parameters are:
 * `provider.env`: environment variables attached to your namespace are injected to all your namespace functions
 * `scwToken`: Scaleway token you got in prerequisites
 * `scwProject`: Scaleway org id you got in prerequisites
-* `scwRegion`: Scaleway region in which the deployment will take place (accepted values in `fr-par`, `nl-ams`, `pl-waw`)
+* `scwRegion`: Scaleway region in which the deployment will take place (accepted values are `fr-par`, `nl-ams`, `pl-waw`, default to `fr-par`)
 * `package.patterns`: usually, you don't need to configure it. Enable to include/exclude directories to/from the deployment
 * `functions`: Configure of your fonctions. It's a yml dictionary, with the key being the function name
   * `handler` (Required): file or function which will be executed. See the next section for runtime specific handlers
