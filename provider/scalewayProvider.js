@@ -1,5 +1,6 @@
 'use strict';
 
+const util = require('util')
 const BbPromise = require('bluebird');
 const { FUNCTIONS_API_URL } = require('../shared/constants');
 const { CONTAINERS_API_URL } = require('../shared/constants');
@@ -57,15 +58,25 @@ class ScalewayProvider {
     }
   }
 
+  setApiURL(options) {
+    if (options['scw-region']) {
+      this.scwRegion = options['scw-region'];
+    } else if (process.env.SCW_REGION) {
+      this.scwRegion = process.env.SCW_REGION;
+    } else {
+      this.scwRegion = this.serverless.service.provider.scwRegion || '';
+    }
+    this.apiFunctionUrl = process.env.SCW_FUNCTION_URL || util.format(FUNCTIONS_API_URL, this.scwRegion);
+    this.apiContainerUrl = process.env.SCW_CONTAINER_URL || util.format(CONTAINERS_API_URL, this.scwRegion);
+  }
+
   initialize(serverless, options) {
     this.serverless = serverless;
     this.options = options;
 
     return new BbPromise((resolve) => {
       this.setCredentials(options);
-
-      this.apiFunctionUrl = FUNCTIONS_API_URL;
-      this.apiContainerUrl = CONTAINERS_API_URL;
+      this.setApiURL(options);
       resolve();
     });
   }
