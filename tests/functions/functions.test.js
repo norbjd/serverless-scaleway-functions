@@ -7,8 +7,8 @@ const { expect } = require('chai');
 const { execSync } = require('../utils/child-process');
 const { getTmpDirPath, replaceTextInFile } = require('../utils/fs');
 const { getServiceName, sleep } = require('../utils/misc');
-const { Api, RegistryApi } = require('../../shared/api');
-const { FUNCTIONS_API_URL } = require('../../shared/constants');
+const { FunctionApi, RegistryApi } = require('../../shared/api');
+const { FUNCTIONS_API_URL, REGISTRY_API_URL } = require('../../shared/constants');
 
 const serverlessExec = path.join('serverless');
 
@@ -17,9 +17,11 @@ describe('Service Lifecyle Integration Test', () => {
   const tmpDir = getTmpDirPath();
   let oldCwd;
   let serviceName;
+  const scwRegion = 'fr-par';
   const scwProject = process.env.SCW_PROJECT;
   const scwToken = process.env.SCW_TOKEN;
-  const apiUrl = FUNCTIONS_API_URL;
+  const apiUrl = `${FUNCTIONS_API_URL}/${scwRegion}`;
+  const registryApiUrl = `${REGISTRY_API_URL}/${scwRegion}/`;
   let api;
   let registryApi;
   let namespace;
@@ -27,8 +29,8 @@ describe('Service Lifecyle Integration Test', () => {
   beforeAll(() => {
     oldCwd = process.cwd();
     serviceName = getServiceName();
-    api = new Api(apiUrl, scwToken);
-    registryApi = new RegistryApi(scwToken);
+    api = new FunctionApi(apiUrl, scwToken);
+    registryApi = new RegistryApi(registryApiUrl, scwToken);
   });
 
   afterAll(() => {
@@ -42,6 +44,7 @@ describe('Service Lifecyle Integration Test', () => {
     replaceTextInFile('serverless.yml', 'scaleway-node10', serviceName);
     replaceTextInFile('serverless.yml', '<scw-token>', scwToken);
     replaceTextInFile('serverless.yml', '<scw-project-id>', scwProject);
+    replaceTextInFile('serverless.yml', '<scw-region>', scwRegion);
     expect(fs.existsSync(path.join(tmpDir, 'serverless.yml'))).to.be.equal(true);
     expect(fs.existsSync(path.join(tmpDir, 'handler.js'))).to.be.equal(true);
   });
@@ -53,9 +56,9 @@ describe('Service Lifecyle Integration Test', () => {
   });
 
   it('should invoke function from scaleway', async () => {
-    const deployedFunction = namespace.functions[0];
     await sleep(6000);
-    const response = await axios.get(deployedFunction.endpoint);
+    const deployedFunction = namespace.functions[0];
+    const response = await axios.get(`https://${deployedFunction.domain_name}`);
     expect(response.data.message).to.be.equal('Hello from Serverless Framework and Scaleway Functions :D');
   });
 
@@ -76,7 +79,8 @@ describe('Service Lifecyle Integration Test', () => {
 
   it('should invoke updated function from scaleway', async () => {
     await sleep(20000);
-    const response = await axios.get(namespace.functions[0].endpoint);
+    const deployedFunction = namespace.functions[0];
+    const response = await axios.get(`https://${deployedFunction.domain_name}`);
     expect(response.data.message).to.be.equal('Serverless Update Succeeded');
   });
 
