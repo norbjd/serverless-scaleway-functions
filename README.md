@@ -102,7 +102,8 @@ The different parameters are:
   * `env` (Optional): environment variables specifics for the current function
   * `minScale` (Optional): how many function instances we keep running (default: 0)
   * `maxScale` (Optional): maximum number of instances this function can scale to (default: 20)
-  * `memoryLimit`: ram allocated to the function instances. See the introduction for the list of supported values 
+  * `memoryLimit`: ram allocated to the function instances. See the introduction for the list of supported values
+  * `timeout`: is the maximum duration in seconds that the request will wait to be served before it times out (default: 300 seconds)
   * `runtime`: (Optional) runtime of the function, if you need to deploy multiple functions with different runtimes in your Serverless Project. If absent, `provider.runtime` will be used to deploy the function, see [this example project](./examples/multiple).
   * `events` (Optional): List of events to trigger your functions (e.g, trigger a function based on a schedule with `CRONJobs`). See `events` section below
 
