@@ -9,14 +9,9 @@ def handle(event, context):
         context (dict): function call metadata
     """
 
-    # print all environment variables beginning with "env"
+    # print all environment variables as key=value beginning with "env"
     return {
         "env_vars": sorted(
-            list(
-                filter(
-                    lambda x: x.startswith("env"),
-                    dict(os.environ).keys()
-                )
-            )
+            [key + "=" + value for key, value in os.environ.items() if key.startswith("env")]
         )
     }

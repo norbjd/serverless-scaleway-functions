@@ -71,9 +71,9 @@ class ScalewayDeploy {
       // - Deploy each function / container
       'deploy:deploy': () => BbPromise.bind(this)
         .then(this.createServerlessNamespace)
+        .then(this.updateServerlessNamespace)
         .then(chainContainers)
         .then(chainFunctions)
-        .then(this.updateServerlessNamespace)
         .then(this.deployTriggers),
     };
   }

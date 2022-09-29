@@ -85,6 +85,7 @@ describe.each(exampleRepositories)(
       if (runtime === 'secrets') {
         // wait to be sure that function have been redeployed because namespace have been updated
         await sleep(30000);
+        // TODO: change return value (examples/secrets/handler.py have changed)
         expect(response.data.env_vars).to.eql([
           'env_notSecret1', 'env_notSecretA',
           'env_secret1', 'env_secret2', 'env_secret3',
